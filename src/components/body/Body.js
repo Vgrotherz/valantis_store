@@ -8,25 +8,31 @@ const Body = () => {
   const [productItems, setProductItems] = useState([]);
   const [productFields, setProductFields] = useState([]);
   const [filteredIds, setFilteredIds] = useState([]);
+  const [ transformFilter, setTranscribe ] = useState([]);
 
   useEffect(() => {
       const fetchData = async () => {
           try {
-              const ids = await getDataFromApi('get_ids', { offset: 10, limit: 3 });
+              const ids = await getDataFromApi('get_ids', { offset: 0, limit: 4 });
               setProductIds(ids);
-              // console.log(ids)
-
-              const items = await getDataFromApi('get_items', { ids: ["18e4e3bd-5e60-4348-8c92-4f61c676be1f", '711837ec-57f6-4145-b17f-c74c2896bafe', '6c972a4a-5b91-4a98-9780-3a19a7f41560'] });
-              setProductItems(items);
-              console.log('items log',items)
+              console.log('лог ids',ids)
 
               const fields = await getDataFromApi('get_fields');
               setProductFields(fields);
               console.log('fields log', fields)
 
-              const filteredIds = await getDataFromApi('filter', { price: 3000.0 });
+              const filteredIds = await getDataFromApi('filter', { 'price': 3000.0 });
               setFilteredIds(filteredIds);
-              console.log('filter log', filteredIds)
+              console.log('filteredIds', filteredIds)
+
+              const items = await getDataFromApi('get_items', { ids });
+              setProductItems(items);
+              console.log('items log',items)
+
+            //   const transformFilter = await getDataFromApi('get_items', {filteredIds})
+            //   setTranscribe(transformFilter);
+            //   console.log('transform filter', transformFilter);
+
 
           } catch (error) {
               console.error("Error fetching data:", error);
@@ -58,12 +64,12 @@ const Body = () => {
             ))}
         </ul>     
 
-        <h2>Product IDs</h2>
+        {/* <h2>Product IDs</h2>
         <ul>
             {productIds.map(id => (
                 <li key={id}>{id}</li>
             ))}
-        </ul>
+        </ul> */}
 
         <h2>Product Items</h2>
         <div>
@@ -83,3 +89,5 @@ const Body = () => {
 }
 
 export default Body;
+
+
