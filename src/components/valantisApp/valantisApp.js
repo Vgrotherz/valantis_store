@@ -1,9 +1,9 @@
 import md5 from 'md5';
 const apiUrl = 'http://api.valantis.store:40000/';
 const apiPassword = 'Valantis';
+const retryTime = 1000; // время после которого будет повтор получения данных
 
-
-export const getDataFromApi = async (action, params) => {
+export const getDataFromApi = async (action, params, retryCount = 0) => {
     const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
     try {
         const response = await fetch(apiUrl, {
@@ -26,7 +26,9 @@ export const getDataFromApi = async (action, params) => {
         return data.result;
     } catch (error) {
         console.error("Error making API request:", error);
-        
-        throw error;
+
+        await new Promise(resolve => setTimeout(resolve, retryTime));
+        return getDataFromApi(action, params, retryCount + 1);
+        // throw error;
     }
 }

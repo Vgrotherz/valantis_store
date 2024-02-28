@@ -9,6 +9,8 @@ const Body = () => {
   const [ transformFilter, setTransformFilter ] = useState([]);
   const [ activeField, setActiveField ] = useState('');
   const [ filterValue, setFilterValue ] = useState({ field: '', value: ''});
+  const [ showFilter, setShowFilter ] = useState(false);
+  // const [ isSearchResults, setIsSearchResults ] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,6 +27,8 @@ const Body = () => {
         const filteredIds = await getDataFromApi('filter', filterObj); // фильтр по заданным параметрам "brand" "price" "product" 
         const filteredItems = await getDataFromApi('get_items', { ids: filteredIds }); // расшифровка id полученного после фильтрации в filteredIds
         setTransformFilter(filteredItems);
+        setShowFilter(true); // true не даёт переключать "результат" на "каталог" при повторном нажатии на кнопку фильтра
+        // setIsSearchResults(true);
         console.log('filtered items', filteredItems);
       } else {
         
@@ -33,6 +37,17 @@ const Body = () => {
     } catch (error) {
       console.error("Error filtering data:", error);
     }
+  };
+
+  const handleClearSearch = () => {
+    setTransformFilter([]);
+    setShowFilter(false); // переключение "результат" на "каталог" при нажатии на "очистить результат"
+    // setIsSearchResults(false);
+    setFilterValue({ field: "", value: "" }); // очистка input значений при нажатии на "очистить результат"
+    setActiveField("");
+    document.getElementsByName("product")[0].value = "";
+    document.getElementsByName("price")[0].value = "";
+    document.getElementsByName("brand")[0].value = "";
   };
 
   useEffect(() => {
@@ -62,7 +77,39 @@ const Body = () => {
           handleFilterButtonClick={handleFilterButtonClick} 
           activeField={activeField}
         />
-        <div>
+        <div >
+          <h1>{!showFilter? 'Весь каталог' : 'Результат' }</h1>
+          {showFilter? (
+            <div className="filtered_block">
+              {transformFilter.map((item, id) => (
+                <div key={id} className="product_block">
+                  {item.brand !== null ? <p>Brand - {item.brand}</p> : null}
+                  <p>Product - {item.product}</p>
+                  <p>Price - {item.price}</p>
+                  <p>Item ID - {item.id}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="whole_product_block">
+              {productItems.map((item, id) => (
+                <div key={id} className="product_block">
+                  {item.brand !== null ? <p> Brand - {item.brand}</p> : null}
+                  <p>Product - {item.product}</p>
+                  <p>Price - {item.price}</p>
+                  <p>Item ID - {item.id}</p>
+                </div>
+              ))}
+            </div>
+            
+          )}
+          
+        </div>
+        {showFilter && (
+          <button onClick={handleClearSearch}>Очистить результат</button>
+        )}
+        
+        {/* <div className="filtered_block">
             <h2>Filtered IDs</h2>
             
             {transformFilter.map((item, id) => (
@@ -76,7 +123,7 @@ const Body = () => {
                 </div>
             ))}
         </div>
-        <div>
+        <div className="whole_product_block">
             <h2>Product Items</h2>
             {productItems.map((item, id) => (
                 <div key={id} className="product_block">
@@ -88,7 +135,8 @@ const Body = () => {
                     <p>Item ID - {item.id}</p>
                 </div>
             ))}
-        </div>
+        </div> */}
+
       </div>
   );
 }
