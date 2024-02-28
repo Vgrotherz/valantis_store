@@ -17,10 +17,16 @@ export const getDataFromApi = async (action, params) => {
                 "X-Auth" : md5(`${apiPassword}_${timestamp}`)
             }
         });
+
+        if(!response.ok) {
+            throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+        }
+
         const data = await response.json();
         return data.result;
     } catch (error) {
         console.error("Error making API request:", error);
+        
         throw error;
     }
 }

@@ -1,41 +1,54 @@
 import React, { useEffect, useState} from "react";
 import { getDataFromApi } from "../valantisApp/valantisApp";
+import Search from "../search/Search";
 
 import './body.css'
 
 const Body = () => {
-  const [productIds, setProductIds] = useState([]);
-  const [productItems, setProductItems] = useState([]);
-  const [productFields, setProductFields] = useState([]);
-  const [filteredIds, setFilteredIds] = useState([]);
-  const [ transformFilter, setTranscribe ] = useState([]);
+  const [ productItems, setProductItems ] = useState([]);
+  const [ transformFilter, setTransformFilter ] = useState([]);
+  const [ activeField, setActiveField ] = useState('');
+  const [ filterValue, setFilterValue ] = useState({ field: '', value: ''});
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    const parsedValue = name === 'price' ? parseFloat(value) : value; // контроль того что приходит в <input> число или строка и конвертация этого в string или number
+    setFilterValue({ field: name, value: parsedValue });
+    setActiveField(value? name : '' )
+  };
+
+  const handleFilterButtonClick = async (e) => {
+    e.preventDefault();
+    try {
+      if (filterValue.field && filterValue.value) {
+        const filterObj = { [filterValue.field]: filterValue.value }; 
+        const filteredIds = await getDataFromApi('filter', filterObj); // фильтр по заданным параметрам "brand" "price" "product" 
+        const filteredItems = await getDataFromApi('get_items', { ids: filteredIds }); // расшифровка id полученного после фильтрации в filteredIds
+        setTransformFilter(filteredItems);
+        console.log('filtered items', filteredItems);
+      } else {
+        
+        console.log("Please provide a filter value."); // здеcь нужно очищение результата
+      }
+    } catch (error) {
+      console.error("Error filtering data:", error);
+    }
+  };
 
   useEffect(() => {
       const fetchData = async () => {
           try {
-              const ids = await getDataFromApi('get_ids', { offset: 0, limit: 4 });
-              setProductIds(ids);
-              console.log('лог ids',ids)
-
-              const fields = await getDataFromApi('get_fields');
-              setProductFields(fields);
-              console.log('fields log', fields)
-
-              const filteredIds = await getDataFromApi('filter', { 'price': 3000.0 });
-              setFilteredIds(filteredIds);
-              console.log('filteredIds', filteredIds)
-
-              const items = await getDataFromApi('get_items', { ids });
+              const ids = await getDataFromApi('get_ids', { offset: 0, limit: 4 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
+              const items = await getDataFromApi('get_items', { ids }); // расшифровка id полученного из const ids 
               setProductItems(items);
               console.log('items log',items)
-
-            //   const transformFilter = await getDataFromApi('get_items', {filteredIds})
-            //   setTranscribe(transformFilter);
-            //   console.log('transform filter', transformFilter);
-
-
+              console.log('лог ids',ids)
           } catch (error) {
               console.error("Error fetching data:", error);
+              if(error.response && error.response.status === 500) {
+                console.log("Retrying fetch after 3 seconds...");
+                setTimeout(fetchData, 3000); // повторить fetchData после 3 сек
+              }
           }
       }
 
@@ -44,35 +57,27 @@ const Body = () => {
 
   return (
       <div>
-        <h2>Product Fields</h2>
+        <Search
+          handleInputChange={handleInputChange} 
+          handleFilterButtonClick={handleFilterButtonClick} 
+          activeField={activeField}
+        />
         <div>
-            {productFields.map((field, index) => (
-                <div key={index}>
-                    {/* {field !== null? (
-                    <p key={index}>{field}</p>
-                    ) : null} */}
-                    <input key={index} placeholder={field}></input>
+            <h2>Filtered IDs</h2>
+            
+            {transformFilter.map((item, id) => (
+                <div key={id} className="product_block">
+                    {item.brand !== null? (
+                        <p> Brand - {item.brand}</p>
+                    ) : null } 
+                    <p>Product - {item.product}</p>
+                    <p>Price - {item.price}</p> 
+                    <p>Item ID - {item.id}</p>
                 </div>
             ))}
-            <button>Filter</button>
         </div>
-
-        <h2>Filtered IDs</h2>
-        <ul>
-            {filteredIds.map(id => (
-                <li key={id}>{id}</li>
-            ))}
-        </ul>     
-
-        {/* <h2>Product IDs</h2>
-        <ul>
-            {productIds.map(id => (
-                <li key={id}>{id}</li>
-            ))}
-        </ul> */}
-
-        <h2>Product Items</h2>
         <div>
+            <h2>Product Items</h2>
             {productItems.map((item, id) => (
                 <div key={id} className="product_block">
                     {item.brand !== null? (
