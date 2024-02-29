@@ -10,7 +10,26 @@ const Body = () => {
   const [ activeField, setActiveField ] = useState('');
   const [ filterValue, setFilterValue ] = useState({ field: '', value: ''});
   const [ showFilter, setShowFilter ] = useState(false);
-  // const [ isSearchResults, setIsSearchResults ] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const ids = await getDataFromApi('get_ids', { offset: 0, limit: 4 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
+            const items = await getDataFromApi('get_items', { ids }); // расшифровка id полученного из const ids 
+            setProductItems(items);
+            console.log('items log',items)
+            console.log('лог ids',ids)
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            if(error.response && error.response.status === 500) {
+              console.log("Retrying fetch after 3 seconds...");
+              setTimeout(fetchData, 3000); // повторить fetchData после 3 сек
+            }
+        }
+    }
+
+    fetchData();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,93 +69,43 @@ const Body = () => {
     document.getElementsByName("brand")[0].value = "";
   };
 
-  useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const ids = await getDataFromApi('get_ids', { offset: 0, limit: 4 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
-              const items = await getDataFromApi('get_items', { ids }); // расшифровка id полученного из const ids 
-              setProductItems(items);
-              console.log('items log',items)
-              console.log('лог ids',ids)
-          } catch (error) {
-              console.error("Error fetching data:", error);
-              if(error.response && error.response.status === 500) {
-                console.log("Retrying fetch after 3 seconds...");
-                setTimeout(fetchData, 3000); // повторить fetchData после 3 сек
-              }
-          }
-      }
-
-      fetchData();
-  }, []);
-
   return (
       <div>
         <Search
           handleInputChange={handleInputChange} 
           handleFilterButtonClick={handleFilterButtonClick} 
           activeField={activeField}
+          handleClearSearch={handleClearSearch}
+          showFilter={showFilter}
         />
-        <div >
+        <div className="main">
           <h1>{!showFilter? 'Весь каталог' : 'Результат' }</h1>
-          {showFilter? (
-            <div className="filtered_block">
-              {transformFilter.map((item, id) => (
-                <div key={id} className="product_block">
-                  {item.brand !== null ? <p>Brand - {item.brand}</p> : null}
-                  <p>Product - {item.product}</p>
-                  <p>Price - {item.price}</p>
-                  <p>Item ID - {item.id}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="whole_product_block">
-              {productItems.map((item, id) => (
-                <div key={id} className="product_block">
-                  {item.brand !== null ? <p> Brand - {item.brand}</p> : null}
-                  <p>Product - {item.product}</p>
-                  <p>Price - {item.price}</p>
-                  <p>Item ID - {item.id}</p>
-                </div>
-              ))}
-            </div>
-            
-          )}
-          
-        </div>
-        {showFilter && (
-          <button onClick={handleClearSearch}>Очистить результат</button>
-        )}
-        
-        {/* <div className="filtered_block">
-            <h2>Filtered IDs</h2>
-            
-            {transformFilter.map((item, id) => (
-                <div key={id} className="product_block">
-                    {item.brand !== null? (
-                        <p> Brand - {item.brand}</p>
-                    ) : null } 
+          <div className="result">
+            {showFilter? (
+              
+                transformFilter.map((item, id) => (
+                  <div key={id} className="product_block">
+                    {item.brand !== null ? <p>Brand - {item.brand}</p> : null}
                     <p>Product - {item.product}</p>
-                    <p>Price - {item.price}</p> 
+                    <p>Price - {item.price}</p>
                     <p>Item ID - {item.id}</p>
-                </div>
-            ))}
-        </div>
-        <div className="whole_product_block">
-            <h2>Product Items</h2>
-            {productItems.map((item, id) => (
-                <div key={id} className="product_block">
-                    {item.brand !== null? (
-                        <p> Brand - {item.brand}</p>
-                    ) : null } 
+                  </div>
+                ))
+              
+            ) : (
+              
+                productItems.map((item, id) => (
+                  <div key={id} className="product_block">
+                    {item.brand !== null ? <p> Brand - {item.brand}</p> : null}
                     <p>Product - {item.product}</p>
-                    <p>Price - {item.price}</p> 
+                    <p>Price - {item.price}</p>
                     <p>Item ID - {item.id}</p>
-                </div>
-            ))}
-        </div> */}
-
+                  </div>
+                ))
+                       
+            )}   
+          </div>
+        </div>
       </div>
   );
 }

@@ -1,8 +1,8 @@
 import React from "react";
+import './search.css'
 
-const Search = ({ handleInputChange, handleFilterButtonClick, activeField }) => {
-
-
+const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch, activeField, showFilter }) => {
+    
     return(
         <div>
             <div className="search_block">
@@ -23,6 +23,9 @@ const Search = ({ handleInputChange, handleFilterButtonClick, activeField }) => 
                         />
                     </div>
                     <button onClick={handleFilterButtonClick}>Filter</button>
+                    {showFilter && (
+                        <button onClick={handleClearSearch}>Очистить результат</button>
+                        )}
                 </form>
             </div>
         </div>

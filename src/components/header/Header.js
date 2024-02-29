@@ -1,9 +1,12 @@
 import React from "react";
+import Logo from "../search/valantisLogo";
+import './header.css'
 
 const Header = () => {
     return (
-        <div>
-
+        <div className="header">
+            <Logo />
+            
         </div>
     )
 }
