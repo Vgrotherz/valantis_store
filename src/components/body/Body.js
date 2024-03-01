@@ -14,7 +14,7 @@ const Body = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const ids = await getDataFromApi('get_ids', { offset: 0 , limit: 100 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
+            const ids = await getDataFromApi('get_ids', { offset: 0 , limit: 50 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
             const uniqueIds = [...new Set(ids)];
             const items = await getDataFromApi('get_items', { ids: uniqueIds }); // расшифровка id полученного из const ids 
 
@@ -90,8 +90,12 @@ const Body = () => {
           handleClearSearch={handleClearSearch}
           showFilter={showFilter}
         />
-        <div className="main">
-          <span className="flex">
+        <div className="main flex">
+          <div className="pagination flex">
+            <button>назад</button>
+            <button>вперёд</button>
+          </div>
+          <span className="main_span flex">
             <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'  }</h1>
             <h3>Количество :</h3>
           </span>
@@ -120,7 +124,7 @@ const Body = () => {
                   </div>
                 ))
                        
-            )}   
+            )}
           </div>
         </div>
       </div>

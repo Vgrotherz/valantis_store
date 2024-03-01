@@ -7,7 +7,7 @@ const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch,
         <div>
             <div className="search_block">
                 <h2>Поиск</h2>
-                <form>
+                <form className="search_form flex">
                     <div>
                         <input type="text" name="product" placeholder="Товар" required
                         onChange={handleInputChange}
