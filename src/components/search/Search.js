@@ -2,7 +2,6 @@ import React from "react";
 import './search.css'
 
 const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch, activeField, showFilter }) => {
-    
     return(
         <div>
             <div className="search_block">

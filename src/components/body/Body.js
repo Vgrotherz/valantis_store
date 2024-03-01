@@ -10,11 +10,12 @@ const Body = () => {
   const [ activeField, setActiveField ] = useState('');
   const [ filterValue, setFilterValue ] = useState({ field: '', value: ''});
   const [ showFilter, setShowFilter ] = useState(false);
+  const [ offset, setOffset ] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const ids = await getDataFromApi('get_ids', { offset: 0 , limit: 50 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
+            const ids = await getDataFromApi('get_ids', { offset, limit: 50 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
             const uniqueIds = [...new Set(ids)];
             const items = await getDataFromApi('get_items', { ids: uniqueIds }); // расшифровка id полученного из const ids 
 
@@ -41,7 +42,7 @@ const Body = () => {
     }
 
     fetchData();
-  }, []);
+  }, [offset]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,6 +70,14 @@ const Body = () => {
     }
   };
 
+  // щелканье страниц
+  const handlePageClick = async (e, direction) => {
+    e.preventDefault();
+    const newOffset = direction === 'forward' ? offset + 50 : Math.max(0, offset - 50);
+    setOffset(newOffset);
+    console.log('offset is ', newOffset)
+  };
+
   const handleClearSearch = () => {
     setTransformFilter([]);
     setShowFilter(false); // переключение "результат" на "каталог" при нажатии на "очистить результат"
@@ -92,8 +101,8 @@ const Body = () => {
         />
         <div className="main flex">
           <div className="pagination flex">
-            <button>назад</button>
-            <button>вперёд</button>
+          <button className={offset === 0? 'backward_0': ''} onClick={(e) => handlePageClick(e, 'backward')}>назад</button>
+          <button onClick={(e) => handlePageClick(e, 'forward')}>вперёд</button>
           </div>
           <span className="main_span flex">
             <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'  }</h1>
@@ -104,11 +113,13 @@ const Body = () => {
               
                 transformFilter.map((item, id) => (
                   <div key={id} className="product_block">
-                    {item.brand !== null ? <p>Brand - {item.brand}</p> : null}
-                    <p>Product - {item.product}</p>
-                    <p>Price - {item.price}</p>
-                    <p>Item ID - {item.id}</p>
-                    <p>Товар {counter++}</p>
+                    <p className="product_name">Товар - {item.product}</p>
+                    <div className="product_specs">
+                    {item.brand !== null ? <p> Брэнд - {item.brand}</p> : null}
+                      <p>Цена - {item.price}руб.</p>
+                      <p>ID товара - {item.id}</p>
+                      <p>Товар № {counter++}</p>
+                    </div>
                   </div>
                 ))
               
@@ -116,11 +127,13 @@ const Body = () => {
               
                 productItems.map((item, id) => (
                   <div key={id} className="product_block">
-                    {item.brand !== null ? <p> Brand - {item.brand}</p> : null}
-                    <p>Product - {item.product}</p>
-                    <p>Price - {item.price}</p>
-                    <p>Item ID - {item.id}</p>
-                    <p>Товар {counter++}</p>
+                    <p className="product_name">Товар - {item.product}</p>
+                    <div className="product_specs">
+                      {item.brand !== null ? <p> Брэнд- {item.brand}</p> : null}
+                      <p>Цена - {item.price}руб.</p>
+                      <p>ID товара - {item.id}</p>
+                      <p>Товар № {counter++}</p>
+                    </div>
                   </div>
                 ))
                        
