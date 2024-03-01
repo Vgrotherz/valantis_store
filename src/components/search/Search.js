@@ -9,15 +9,15 @@ const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch,
                 <h2>Поиск</h2>
                 <form>
                     <div>
-                        <input type="text" name="product" placeholder="Товар"
+                        <input type="text" name="product" placeholder="Товар" required
                         onChange={handleInputChange}
                         disabled={activeField && activeField !== 'product'}
                         />
-                        <input type="text" name='price' placeholder="Цена"
+                        <input type="text" name='price' placeholder="Цена" required
                         onChange={handleInputChange}
                         disabled={activeField && activeField !== 'price'}
                         />
-                        <input type="text" name="brand" placeholder="Брэнд"
+                        <input type="text" name="brand" placeholder="Брэнд" required
                         onChange={handleInputChange}
                         disabled={activeField && activeField !== 'brand'}
                         />
@@ -25,7 +25,7 @@ const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch,
                     <button onClick={handleFilterButtonClick}>Filter</button>
                     {showFilter && (
                         <button onClick={handleClearSearch}>Очистить результат</button>
-                        )}
+                    )}
                 </form>
             </div>
         </div>
