@@ -1,20 +1,24 @@
 import React, { useEffect, useState} from "react";
 import { getDataFromApi } from "../valantisApp/valantisApp";
 import Search from "../search/Search";
+import Pagination from "../pagination/Pagination";
+import Results from "../results/Results";
 
 import './body.css'
 
 const Body = () => {
-  const [ productItems, setProductItems ] = useState([]);
-  const [ transformFilter, setTransformFilter ] = useState([]);
-  const [ activeField, setActiveField ] = useState('');
-  const [ filterValue, setFilterValue ] = useState({ field: '', value: ''});
-  const [ showFilter, setShowFilter ] = useState(false);
-  const [ offset, setOffset ] = useState(0);
+  const [ productItems, setProductItems ] = useState([]); // основной товар
+  const [ transformFilter, setTransformFilter ] = useState([]); // отфильтрованый товар
+  const [ activeField, setActiveField ] = useState(''); 
+  const [ filterValue, setFilterValue ] = useState({ params: '', value: ''});
+  const [ showFilter, setShowFilter ] = useState(false); // 
+  const [ offset, setOffset ] = useState(0); // стейт смещения 
+  const [ isLoading, setIsLoading ] = useState(false) // стейт лоадера во время загрузки товара
 
   useEffect(() => {
     const fetchData = async () => {
         try {
+            setIsLoading(true);
             const ids = await getDataFromApi('get_ids', { offset, limit: 50 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
             const uniqueIds = [...new Set(ids)];
             const items = await getDataFromApi('get_items', { ids: uniqueIds }); // расшифровка id полученного из const ids 
@@ -30,6 +34,7 @@ const Body = () => {
             const uniqueItems = Array.from(uniqueItemsMap.values());
 
             setProductItems(uniqueItems);
+            setIsLoading(false)
             console.log('items log',uniqueItems) // uniqueItems меняется на items и тогда виден лог без изменений со всеми дублями
             console.log('лог ids',uniqueIds) // тут на ids
         } catch (error) {
@@ -47,19 +52,24 @@ const Body = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const parsedValue = name === 'price' ? parseFloat(value) : value; // контроль того что приходит в <input> число или строка и конвертация этого в string или number
-    setFilterValue({ field: name, value: parsedValue });
+    setFilterValue({ params: name, value: parsedValue });
     setActiveField(value? name : '' )
   };
 
   const handleFilterButtonClick = async (e) => {
+    setIsLoading(true)
+    setOffset(0);
+    setProductItems([]);
     e.preventDefault();
     try {
-      if (filterValue.field && filterValue.value) {
-        const filterObj = { [filterValue.field]: filterValue.value }; 
+      if (filterValue.params && filterValue.value) {
+        const filterObj = { [filterValue.params]: filterValue.value }; 
         const filteredIds = await getDataFromApi('filter', filterObj); // фильтр по заданным параметрам "brand" "price" "product" 
+        console.log('filtered Ids', filteredIds)
         const filteredItems = await getDataFromApi('get_items', { ids: filteredIds }); // расшифровка id полученного после фильтрации в filteredIds
         setTransformFilter(filteredItems);
         setShowFilter(true); // true не даёт переключать "результат" на "каталог" при повторном нажатии на кнопку фильтра
+        setIsLoading(false)
         console.log('filtered items', filteredItems);
       } else {
         
@@ -77,19 +87,23 @@ const Body = () => {
     setOffset(newOffset);
     console.log('offset is ', newOffset)
   };
-
+  
   const handleClearSearch = () => {
+    setIsLoading(true)
+    setOffset(0);
     setTransformFilter([]);
     setShowFilter(false); // переключение "результат" на "каталог" при нажатии на "очистить результат"
     // setIsSearchResults(false);
-    setFilterValue({ field: "", value: "" }); // очистка input значений при нажатии на "очистить результат"
+    setFilterValue({ params: "", value: "" }); // очистка input значений при нажатии на "очистить результат"
     setActiveField("");
     document.getElementsByName("product")[0].value = "";
     document.getElementsByName("price")[0].value = "";
     document.getElementsByName("brand")[0].value = "";
+    setIsLoading(false)
+
   };
 
-  let counter = 1
+  
   return (
       <div>
         <Search
@@ -100,44 +114,17 @@ const Body = () => {
           showFilter={showFilter}
         />
         <div className="main flex">
-          <div className="pagination flex">
-          <button className={offset === 0? 'backward_0': ''} onClick={(e) => handlePageClick(e, 'backward')}>назад</button>
-          <button onClick={(e) => handlePageClick(e, 'forward')}>вперёд</button>
-          </div>
+           <Pagination handlePageClick={handlePageClick} offset={offset} showFilter={showFilter}/>
           <span className="main_span flex">
             <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'  }</h1>
-            <h3>Количество :</h3>
+            { offset > 0? (
+            <div className="margin_1rem">
+              <button className="home_button" onClick={() => setOffset(0)}>В начало</button>
+            </div>
+            ) : (null)}
           </span>
           <div className="result">
-            {showFilter? (
-              
-                transformFilter.map((item, id) => (
-                  <div key={id} className="product_block">
-                    <p className="product_name">Товар - {item.product}</p>
-                    <div className="product_specs">
-                    {item.brand !== null ? <p> Брэнд - {item.brand}</p> : null}
-                      <p>Цена - {item.price}руб.</p>
-                      <p>ID товара - {item.id}</p>
-                      <p>Товар № {counter++}</p>
-                    </div>
-                  </div>
-                ))
-              
-            ) : (
-              
-                productItems.map((item, id) => (
-                  <div key={id} className="product_block">
-                    <p className="product_name">Товар - {item.product}</p>
-                    <div className="product_specs">
-                      {item.brand !== null ? <p> Брэнд- {item.brand}</p> : null}
-                      <p>Цена - {item.price}руб.</p>
-                      <p>ID товара - {item.id}</p>
-                      <p>Товар № {counter++}</p>
-                    </div>
-                  </div>
-                ))
-                       
-            )}
+            <Results productItems={productItems} transformFilter={transformFilter} showFilter={showFilter} isLoading={isLoading}/>
           </div>
         </div>
       </div>

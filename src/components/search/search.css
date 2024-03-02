@@ -6,6 +6,12 @@
     align-items: center;
 }
 
+.search_block h2 {
+    margin: 1rem;
+}
+
 .search_form {
     flex-direction: column;
+    margin-bottom: 1.5rem;
 }
+

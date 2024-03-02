@@ -18,9 +18,15 @@
     font-weight: 700;
 }
 
-.product_specs {
+/* .product_specs {
     
+} */
+
+.home_button {
+    margin: 0px 0rem 18px -42px;
+    position: absolute;
 }
+
 
 .result {
     padding: 1rem;
