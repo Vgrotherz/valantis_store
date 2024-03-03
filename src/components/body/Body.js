@@ -6,6 +6,8 @@ import Results from "../results/Results";
 
 import './body.css'
 
+const ITEMS_PER_PAGE = 50;
+
 const Body = () => {
   const [ productItems, setProductItems ] = useState([]); // основной товар
   const [ transformFilter, setTransformFilter ] = useState([]); // отфильтрованый товар
@@ -14,14 +16,24 @@ const Body = () => {
   const [ showFilter, setShowFilter ] = useState(false); // 
   const [ offset, setOffset ] = useState(0); // стейт смещения 
   const [ isLoading, setIsLoading ] = useState(false) // стейт лоадера во время загрузки товара
+  const [ totalPages, setTotalPages ] = useState(0);
+  
 
   useEffect(() => {
     const fetchData = async () => {
         try {
             setIsLoading(true);
-            const ids = await getDataFromApi('get_ids', { offset, limit: 50 }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
-            const uniqueIds = [...new Set(ids)];
-            const items = await getDataFromApi('get_items', { ids: uniqueIds }); // расшифровка id полученного из const ids 
+            const limitIds = await getDataFromApi('get_ids', { offset }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
+            // const unLimitIds = await getDataFromApi('get_ids', {offset: 0}); // получение всего списка товаров без фильтров
+            // console.log('inlim ids', unLimitIds)
+
+            const uniqueIds = [...new Set(limitIds)];
+            setTotalPages(Math.ceil(uniqueIds.length / ITEMS_PER_PAGE)); // Calculate total pages
+            const paginatedIds = uniqueIds.slice(offset, offset + ITEMS_PER_PAGE);
+            const items = await getDataFromApi('get_items', { ids: paginatedIds });
+
+
+            // const items = await getDataFromApi('get_items', { ids: uniqueIds }); // расшифровка id полученного из const ids 
 
             // создает новый мап сохраняет туда только первый ID  
             const uniqueItemsMap = new Map();
@@ -31,6 +43,7 @@ const Body = () => {
               }
             });
 
+           
             const uniqueItems = Array.from(uniqueItemsMap.values());
 
             setProductItems(uniqueItems);
@@ -58,8 +71,7 @@ const Body = () => {
 
   const handleFilterButtonClick = async (e) => {
     setIsLoading(true)
-    setOffset(0);
-    setProductItems([]);
+    // setProductItems([]);
     e.preventDefault();
     try {
       if (filterValue.params && filterValue.value) {
@@ -67,10 +79,20 @@ const Body = () => {
         const filteredIds = await getDataFromApi('filter', filterObj); // фильтр по заданным параметрам "brand" "price" "product" 
         console.log('filtered Ids', filteredIds)
         const filteredItems = await getDataFromApi('get_items', { ids: filteredIds }); // расшифровка id полученного после фильтрации в filteredIds
-        setTransformFilter(filteredItems);
+
+        const uniqueFilteredItemsMap = new Map();
+        filteredItems.forEach(item => {
+          if (!uniqueFilteredItemsMap.has(item.id)) {
+            uniqueFilteredItemsMap.set(item.id, item);
+          }
+        });
+
+        const uniqueFilteredItems = Array.from(uniqueFilteredItemsMap.values());
+
+        setTransformFilter(uniqueFilteredItems);
         setShowFilter(true); // true не даёт переключать "результат" на "каталог" при повторном нажатии на кнопку фильтра
         setIsLoading(false)
-        console.log('filtered items', filteredItems);
+        console.log('filtered items', uniqueFilteredItems);
       } else {
         
         console.log("Please provide a filter value."); // здеcь нужно очищение результата
@@ -80,20 +102,11 @@ const Body = () => {
     }
   };
 
-  // щелканье страниц
-  const handlePageClick = async (e, direction) => {
-    e.preventDefault();
-    const newOffset = direction === 'forward' ? offset + 50 : Math.max(0, offset - 50);
-    setOffset(newOffset);
-    console.log('offset is ', newOffset)
-  };
-  
   const handleClearSearch = () => {
     setIsLoading(true)
     setOffset(0);
     setTransformFilter([]);
     setShowFilter(false); // переключение "результат" на "каталог" при нажатии на "очистить результат"
-    // setIsSearchResults(false);
     setFilterValue({ params: "", value: "" }); // очистка input значений при нажатии на "очистить результат"
     setActiveField("");
     document.getElementsByName("product")[0].value = "";
@@ -103,7 +116,18 @@ const Body = () => {
 
   };
 
-  
+  const handlePrevPage = () => {
+      if (offset > 0) {
+          setOffset(offset - ITEMS_PER_PAGE);
+      }
+  };
+
+  const handleNextPage = () => {
+      if (offset + ITEMS_PER_PAGE < totalPages * ITEMS_PER_PAGE) {
+          setOffset(offset + ITEMS_PER_PAGE);
+      }
+  };
+
   return (
       <div>
         <Search
@@ -114,7 +138,12 @@ const Body = () => {
           showFilter={showFilter}
         />
         <div className="main flex">
-           <Pagination handlePageClick={handlePageClick} offset={offset} showFilter={showFilter}/>
+           <Pagination 
+              handlePrevPage={handlePrevPage}
+              handleNextPage={handleNextPage}
+              isFirstPage={offset === 0}
+              isLastPage={offset + ITEMS_PER_PAGE >= totalPages * ITEMS_PER_PAGE}
+            />
           <span className="main_span flex">
             <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'  }</h1>
             { offset > 0? (
@@ -124,7 +153,7 @@ const Body = () => {
             ) : (null)}
           </span>
           <div className="result">
-            <Results productItems={productItems} transformFilter={transformFilter} showFilter={showFilter} isLoading={isLoading}/>
+            <Results productItems={productItems} transformFilter={transformFilter} showFilter={showFilter} isLoading={isLoading} offset={offset} />
           </div>
         </div>
       </div>

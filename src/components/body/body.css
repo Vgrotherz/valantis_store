@@ -3,7 +3,7 @@
     align-items: center;
 }
 
-.product_block {
+.product_block, .loading{
     border: 1px solid;
     padding: 1rem;
     margin: 1rem;
@@ -23,8 +23,8 @@
 } */
 
 .home_button {
-    margin: 0px 0rem 18px -42px;
-    position: absolute;
+    /* margin: 0px 0rem 18px -42px;
+    position: absolute; */
 }
 
 
