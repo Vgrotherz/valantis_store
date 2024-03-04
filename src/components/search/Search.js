@@ -5,7 +5,7 @@ const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch,
     return(
         <div>
             <div className="search_block">
-                <h2>Поиск</h2>
+                <h2 onClick={handleFilterButtonClick} className="search_button">Поиск</h2>
                 <form className="search_form flex">
                     <div>
                         <input type="text" name="product" placeholder="Товар" required
@@ -16,12 +16,12 @@ const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch,
                         onChange={handleInputChange}
                         disabled={activeField && activeField !== 'price'}
                         />
-                        <input type="text" name="brand" placeholder="Брэнд" required
+                        <input type="text" name="brand" placeholder="Бренд" required
                         onChange={handleInputChange}
                         disabled={activeField && activeField !== 'brand'}
                         />
                     </div>
-                    <button onClick={handleFilterButtonClick}>Filter</button>
+                    {/* <button onClick={handleFilterButtonClick}>Filter</button> */}
                     {showFilter && (
                         <button onClick={handleClearSearch}>Очистить результат</button>
                     )}

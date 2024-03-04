@@ -8,7 +8,7 @@ import './reset.css';
 const App = () => {
 
   return (
-    <div>
+    <div className='app'>
       <Header />
       <Body />
     </div>

@@ -1,12 +1,13 @@
 import React, { useEffect, useState} from "react";
 import { getDataFromApi } from "../valantisApp/valantisApp";
 import Search from "../search/Search";
-import Pagination from "../pagination/Pagination";
 import Results from "../results/Results";
+
+import backgroundBanner from '../../media/banner.jpg'
 
 import './body.css'
 
-const ITEMS_PER_PAGE = 50;
+
 
 const Body = () => {
   const [ productItems, setProductItems ] = useState([]); // основной товар
@@ -16,24 +17,16 @@ const Body = () => {
   const [ showFilter, setShowFilter ] = useState(false); // 
   const [ offset, setOffset ] = useState(0); // стейт смещения 
   const [ isLoading, setIsLoading ] = useState(false) // стейт лоадера во время загрузки товара
-  const [ totalPages, setTotalPages ] = useState(0);
   
 
   useEffect(() => {
     const fetchData = async () => {
         try {
             setIsLoading(true);
-            const limitIds = await getDataFromApi('get_ids', { offset }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
-            // const unLimitIds = await getDataFromApi('get_ids', {offset: 0}); // получение всего списка товаров без фильтров
-            // console.log('inlim ids', unLimitIds)
-
-            const uniqueIds = [...new Set(limitIds)];
-            setTotalPages(Math.ceil(uniqueIds.length / ITEMS_PER_PAGE)); // Calculate total pages
-            const paginatedIds = uniqueIds.slice(offset, offset + ITEMS_PER_PAGE);
-            const items = await getDataFromApi('get_items', { ids: paginatedIds });
-
-
-            // const items = await getDataFromApi('get_items', { ids: uniqueIds }); // расшифровка id полученного из const ids 
+            const ids = await getDataFromApi('get_ids', { offset }); // получение id по заданному количеству - limit и смещения относительно начала списка - offset, везде только положительные числа;
+            const uniqueIds = [...new Set(ids)];
+            
+            const items = await getDataFromApi('get_items', { ids: uniqueIds });// расшифровка id полученного из const ids 
 
             // создает новый мап сохраняет туда только первый ID  
             const uniqueItemsMap = new Map();
@@ -43,7 +36,6 @@ const Body = () => {
               }
             });
 
-           
             const uniqueItems = Array.from(uniqueItemsMap.values());
 
             setProductItems(uniqueItems);
@@ -104,7 +96,6 @@ const Body = () => {
 
   const handleClearSearch = () => {
     setIsLoading(true)
-    setOffset(0);
     setTransformFilter([]);
     setShowFilter(false); // переключение "результат" на "каталог" при нажатии на "очистить результат"
     setFilterValue({ params: "", value: "" }); // очистка input значений при нажатии на "очистить результат"
@@ -114,18 +105,6 @@ const Body = () => {
     document.getElementsByName("brand")[0].value = "";
     setIsLoading(false)
 
-  };
-
-  const handlePrevPage = () => {
-      if (offset > 0) {
-          setOffset(offset - ITEMS_PER_PAGE);
-      }
-  };
-
-  const handleNextPage = () => {
-      if (offset + ITEMS_PER_PAGE < totalPages * ITEMS_PER_PAGE) {
-          setOffset(offset + ITEMS_PER_PAGE);
-      }
   };
 
   return (
@@ -138,21 +117,18 @@ const Body = () => {
           showFilter={showFilter}
         />
         <div className="main flex">
-           <Pagination 
-              handlePrevPage={handlePrevPage}
-              handleNextPage={handleNextPage}
-              isFirstPage={offset === 0}
-              isLastPage={offset + ITEMS_PER_PAGE >= totalPages * ITEMS_PER_PAGE}
-            />
-          <span className="main_span flex">
+          <div className="background_banner">
+            <img src={backgroundBanner} alt="background banner"></img>
+          </div>
+          <span className="main_span flex ">
             <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'  }</h1>
-            { offset > 0? (
+             
             <div className="margin_1rem">
               <button className="home_button" onClick={() => setOffset(0)}>В начало</button>
             </div>
-            ) : (null)}
+            
           </span>
-          <div className="result">
+          <div className="flex">
             <Results productItems={productItems} transformFilter={transformFilter} showFilter={showFilter} isLoading={isLoading} offset={offset} />
           </div>
         </div>
