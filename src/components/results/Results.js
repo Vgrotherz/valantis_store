@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Loading from "./Loading";
-// import Pagination from '../pagination/Pagination'
+import Pagination from '../pagination/Pagination'
 
 import './loading.css'
 import './results.css'
@@ -34,18 +34,21 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading }) => {
         }
     };
 
+    const totalPages2 = Math.ceil((showFilter ? transformFilter.length : productItems.length) / itemsPerPage)
+    console.log('total pages', totalPages2)
+
+    console.log('current page',currentPage);
+
     return (
         <>
             {isLoading ? (
-                <div className="result">
+                <div className="result loading_array ">
                 { Array.from({ length: 18 }).map((_, index) => <Loading key={index} className='result' />)}
                 </div>
                 
             ) : (
-                <>
-                    <div className="pagination_prev">
-                        <button onClick={handlePrevPage} disabled={currentPage === 1}>назад</button>
-                    </div>
+                <div className="search_n_result">  
+                    <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} currentPage={currentPage} itemsPerPage={itemsPerPage} />
                     <div className="result">
                     {displayedItems.map((item, id) => (
                         <div key={id} className="product_block">
@@ -59,15 +62,11 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading }) => {
                         </div>
                     ))}
                     </div>
-                    <div className="pagination_next">
-                        <button onClick={handleNextPage} disabled={currentPage === Math.ceil((showFilter ? transformFilter.length : productItems.length) / itemsPerPage)}>вперёд</button>
+                    <div className="low_pagination">
+                        <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} currentPage={currentPage} itemsPerPage={itemsPerPage} />
                     </div>
-                </>
-            )}
-            {/* <div className="pagination flex">
-                <button onClick={handlePrevPage} disabled={currentPage === 1}>назад</button>
-                <button onClick={handleNextPage} disabled={currentPage === Math.ceil((showFilter ? transformFilter.length : productItems.length) / itemsPerPage)}>вперёд</button>
-            </div> */}
+                </div>
+            )}            
         </>
     );
 }

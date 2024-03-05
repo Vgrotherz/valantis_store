@@ -22,7 +22,7 @@
 
 
 .result {
-    padding: 1rem 0;
+    padding: 1.5rem 0;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;   
@@ -35,6 +35,6 @@
     margin-top: 1rem;
 }
 
-.backward_0 {
-    visibility: hidden;
+.main_span h3 {
+    margin: 0.5rem 0;
 }

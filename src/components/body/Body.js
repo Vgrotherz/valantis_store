@@ -96,6 +96,7 @@ const Body = () => {
 
   const handleClearSearch = () => {
     setIsLoading(true)
+    setOffset(0);
     setTransformFilter([]);
     setShowFilter(false); // переключение "результат" на "каталог" при нажатии на "очистить результат"
     setFilterValue({ params: "", value: "" }); // очистка input значений при нажатии на "очистить результат"
@@ -121,11 +122,12 @@ const Body = () => {
             <img src={backgroundBanner} alt="background banner"></img>
           </div>
           <span className="main_span flex ">
-            <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'  }</h1>
-             
-            <div className="margin_1rem">
+            <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'}</h1>
+            <h3>Всего товаров: {!showFilter ? productItems.length : transformFilter.length}
+            </h3>
+            {/* <div className="margin_1rem">
               <button className="home_button" onClick={() => setOffset(0)}>В начало</button>
-            </div>
+            </div> */}
             
           </span>
           <div className="flex">
