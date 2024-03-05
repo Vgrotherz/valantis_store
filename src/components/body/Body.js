@@ -9,7 +9,7 @@ import './body.css'
 
 
 
-const Body = () => {
+const Body = ({setCurrentPage}) => {
   const [ productItems, setProductItems ] = useState([]); // основной товар
   const [ transformFilter, setTransformFilter ] = useState([]); // отфильтрованый товар
   const [ activeField, setActiveField ] = useState(''); 
@@ -61,10 +61,20 @@ const Body = () => {
     setActiveField(value? name : '' )
   };
 
+  console.log('filter value log', filterValue.value )
+
   const handleFilterButtonClick = async (e) => {
     setIsLoading(true)
+    
     // setProductItems([]);
     e.preventDefault();
+
+    if (!filterValue.params || !filterValue.value) {
+      console.log("Please enter a value for filtering.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       if (filterValue.params && filterValue.value) {
         const filterObj = { [filterValue.params]: filterValue.value }; 
@@ -123,7 +133,10 @@ const Body = () => {
           </div>
           <span className="main_span flex ">
             <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'}</h1>
-            <h3>Всего товаров: {!showFilter ? productItems.length : transformFilter.length}
+            <h3>Найдено {!showFilter ? productItems.length : transformFilter.length} товара(-ов) {
+              showFilter && filterValue.params === "product" ? (`по запросу "${filterValue.value}"`) : 
+              showFilter && filterValue.params === "price"? (`по заданной цене - "${filterValue.value}"`) : 
+              showFilter && filterValue.params === "brand"? (`по заданному бренду - "${filterValue.value}"`) : (null)}
             </h3>
             {/* <div className="margin_1rem">
               <button className="home_button" onClick={() => setOffset(0)}>В начало</button>

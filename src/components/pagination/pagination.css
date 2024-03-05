@@ -1,0 +1,39 @@
+.pagination {
+    /* margin-top: 2rem;
+    margin-left: 5rem;
+    position: fixed;
+    width: 92.2%; */
+    justify-content: center;
+    align-items: center;
+    /* margin-top: 1rem; */
+}
+
+.pagination_button {
+    border-radius: 2rem;
+    /* padding: 1rem; */
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.4rem;
+}
+
+.activePage {
+    font-weight: 700;
+    color: #cd4040;
+    font-size: larger;
+    background-color: #d1cac3;
+    box-shadow: 1px 1px 6px 1px #958e8e;
+    transition: 300ms ease-in-out;
+}
+
+.page_numbers {
+    margin: 0 0.5rem;
+}
+
+.page_numbers button {
+    border: none;
+    margin: 0 0.2rem;
+}
+
+.page_numbers button:hover {
+    background-color: #cfd8da;
+}

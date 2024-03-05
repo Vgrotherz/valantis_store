@@ -34,10 +34,10 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading }) => {
         }
     };
 
-    const totalPages2 = Math.ceil((showFilter ? transformFilter.length : productItems.length) / itemsPerPage)
-    console.log('total pages', totalPages2)
+    // const totalPages2 = Math.ceil((showFilter ? transformFilter.length : productItems.length) / itemsPerPage)
+    // console.log('total pages', totalPages2)
 
-    console.log('current page',currentPage);
+    // console.log('current page',currentPage);
 
     return (
         <>
@@ -62,9 +62,11 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading }) => {
                         </div>
                     ))}
                     </div>
-                    <div className="low_pagination">
-                        <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} currentPage={currentPage} itemsPerPage={itemsPerPage} />
-                    </div>
+                    {setCurrentPage >= 2? (
+                        <div className="low_pagination">
+                            <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} currentPage={currentPage} setCurrentPage={setCurrentPage} itemsPerPage={itemsPerPage} />
+                        </div>) : ( null)
+                    }
                 </div>
             )}            
         </>
