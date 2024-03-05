@@ -48,7 +48,7 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading }) => {
                 
             ) : (
                 <div className="search_n_result">  
-                    <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} currentPage={currentPage} itemsPerPage={itemsPerPage} />
+                    <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} setCurrentPage={setCurrentPage} currentPage={currentPage} itemsPerPage={itemsPerPage} />
                     <div className="result">
                     {displayedItems.map((item, id) => (
                         <div key={id} className="product_block">
