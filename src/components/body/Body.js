@@ -18,6 +18,7 @@ const Body = ({setCurrentPage}) => {
   const [ offset, setOffset ] = useState(0); // стейт смещения 
   const [ isLoading, setIsLoading ] = useState(false) // стейт лоадера во время загрузки товара
   
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,13 +56,23 @@ const Body = ({setCurrentPage}) => {
   }, [offset]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    const parsedValue = name === 'price' ? parseFloat(value) : value; // контроль того что приходит в <input> число или строка и конвертация этого в string или number
-    setFilterValue({ params: name, value: parsedValue });
-    setActiveField(value? name : '' )
-  };
+    const { value } = e.target;
 
-  console.log('filter value log', filterValue.value )
+    let params = '';
+    if (!isNaN(value) && value.trim() !== Boolean) { // Check if input is a number for "price"
+        params = 'price';
+    } else if (/[a-zA-Z]/.test(value)) { // Check if input contains English letters for "brand"
+        params = 'brand';
+    } else if (/[А-Яа-яЁё]/.test(value)) { // Check if input contains Russian letters for "product"
+        params = 'product';
+    }
+
+    setFilterValue({ params, value });
+};
+
+
+  console.log('filter value log', filterValue.value );
+  console.log('filter params value', filterValue.params);
 
   const handleFilterButtonClick = async (e) => {
     setIsLoading(true)
@@ -111,9 +122,9 @@ const Body = ({setCurrentPage}) => {
     setShowFilter(false); // переключение "результат" на "каталог" при нажатии на "очистить результат"
     setFilterValue({ params: "", value: "" }); // очистка input значений при нажатии на "очистить результат"
     setActiveField("");
-    document.getElementsByName("product")[0].value = "";
-    document.getElementsByName("price")[0].value = "";
-    document.getElementsByName("brand")[0].value = "";
+    document.getElementsByName("universal")[0].value = "";
+    // document.getElementsByName("price")[0].value = "";
+    // document.getElementsByName("brand")[0].value = "";
     setIsLoading(false)
 
   };
@@ -133,11 +144,11 @@ const Body = ({setCurrentPage}) => {
           </div>
           <span className="main_span flex ">
             <h1>{!showFilter? 'Весь каталог' : 'Товары по запросу'}</h1>
-            <h3>Найдено {!showFilter ? productItems.length : transformFilter.length} товара(-ов) {
+            {!isLoading? (<h3>Найдено {!showFilter ? productItems.length : transformFilter.length} товара(-ов) {
               showFilter && filterValue.params === "product" ? (`по запросу "${filterValue.value}"`) : 
               showFilter && filterValue.params === "price"? (`по заданной цене - "${filterValue.value}"`) : 
               showFilter && filterValue.params === "brand"? (`по заданному бренду - "${filterValue.value}"`) : (null)}
-            </h3>
+            </h3>) : null}
             {/* <div className="margin_1rem">
               <button className="home_button" onClick={() => setOffset(0)}>В начало</button>
             </div> */}

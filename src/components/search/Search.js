@@ -13,17 +13,12 @@ const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch,
                 <h2 onClick={handleFilterSearch} className="search_button">Поиск</h2>
                 <form className="search_form flex">
                     <div>
-                        <input type="text" name="product" placeholder="Товар" required
-                        onChange={handleInputChange}
-                        disabled={activeField && activeField !== 'product'}
-                        />
-                        <input type="text" name='price' placeholder="Цена" required
-                        onChange={handleInputChange}
-                        disabled={activeField && activeField !== 'price'}
-                        />
-                        <input type="text" name="brand" placeholder="Бренд" required
-                        onChange={handleInputChange}
-                        disabled={activeField && activeField !== 'brand'}
+                        <input 
+                          type="text" 
+                          name="universal" 
+                          placeholder="Поиск (товар, цена, бренд)" 
+                          required
+                          onChange={handleInputChange}
                         />
                     </div>
                     {showFilter && (
