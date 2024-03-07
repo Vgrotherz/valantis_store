@@ -9,7 +9,7 @@ import './body.css'
 
 
 
-const Body = ({setCurrentPage}) => {
+const Body = ({ currentPage, setCurrentPage }) => {
   const [ productItems, setProductItems ] = useState([]); // основной товар
   const [ transformFilter, setTransformFilter ] = useState([]); // отфильтрованый товар
   const [ activeField, setActiveField ] = useState(''); 
@@ -41,8 +41,8 @@ const Body = ({setCurrentPage}) => {
 
             setProductItems(uniqueItems);
             setIsLoading(false)
-            console.log('items log',uniqueItems) // uniqueItems меняется на items и тогда виден лог без изменений со всеми дублями
-            console.log('лог ids',uniqueIds) // тут на ids
+            // console.log('items log',uniqueItems) // uniqueItems меняется на items и тогда виден лог без изменений со всеми дублями
+            // console.log('лог ids',uniqueIds) // тут на ids
         } catch (error) {
             console.error("Error fetching data:", error);
             if(error.response && error.response.status === 500) {
@@ -55,30 +55,13 @@ const Body = ({setCurrentPage}) => {
     fetchData();
   }, [offset]);
 
-  const handleInputChange = (e) => {
-    const { value } = e.target;
-
-    let params = '';
-    if (!isNaN(value) && value.trim() !== Boolean) { // Check if input is a number for "price"
-        params = 'price';
-    } else if (/[a-zA-Z]/.test(value)) { // Check if input contains English letters for "brand"
-        params = 'brand';
-    } else if (/[А-Яа-яЁё]/.test(value)) { // Check if input contains Russian letters for "product"
-        params = 'product';
-    }
-
-    setFilterValue({ params, value });
-};
-
-
   console.log('filter value log', filterValue.value );
   console.log('filter params value', filterValue.params);
 
   const handleFilterButtonClick = async (e) => {
     setIsLoading(true)
-    
-    // setProductItems([]);
-    e.preventDefault();
+    setOffset(0);
+    // e.preventDefault();
 
     if (!filterValue.params || !filterValue.value) {
       console.log("Please enter a value for filtering.");
@@ -108,7 +91,7 @@ const Body = ({setCurrentPage}) => {
         console.log('filtered items', uniqueFilteredItems);
       } else {
         
-        console.log("Please provide a filter value."); // здеcь нужно очищение результата
+        console.log("Please provide a filter value.");
       }
     } catch (error) {
       console.error("Error filtering data:", error);
@@ -117,14 +100,12 @@ const Body = ({setCurrentPage}) => {
 
   const handleClearSearch = () => {
     setIsLoading(true)
-    setOffset(0);
+    setCurrentPage(1);
     setTransformFilter([]);
     setShowFilter(false); // переключение "результат" на "каталог" при нажатии на "очистить результат"
     setFilterValue({ params: "", value: "" }); // очистка input значений при нажатии на "очистить результат"
     setActiveField("");
     document.getElementsByName("universal")[0].value = "";
-    // document.getElementsByName("price")[0].value = "";
-    // document.getElementsByName("brand")[0].value = "";
     setIsLoading(false)
 
   };
@@ -132,11 +113,14 @@ const Body = ({setCurrentPage}) => {
   return (
       <div>
         <Search
-          handleInputChange={handleInputChange} 
           handleFilterButtonClick={handleFilterButtonClick} 
-          activeField={activeField}
+          setActiveField={setActiveField}
           handleClearSearch={handleClearSearch}
           showFilter={showFilter}
+          filterValue={filterValue}
+          setFilterValue={setFilterValue}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
         />
         <div className="main flex">
           <div className="background_banner">
@@ -148,14 +132,10 @@ const Body = ({setCurrentPage}) => {
               showFilter && filterValue.params === "product" ? (`по запросу "${filterValue.value}"`) : 
               showFilter && filterValue.params === "price"? (`по заданной цене - "${filterValue.value}"`) : 
               showFilter && filterValue.params === "brand"? (`по заданному бренду - "${filterValue.value}"`) : (null)}
-            </h3>) : null}
-            {/* <div className="margin_1rem">
-              <button className="home_button" onClick={() => setOffset(0)}>В начало</button>
-            </div> */}
-            
+            </h3>) : null}            
           </span>
           <div className="flex">
-            <Results productItems={productItems} transformFilter={transformFilter} showFilter={showFilter} isLoading={isLoading} offset={offset} />
+            <Results productItems={productItems} transformFilter={transformFilter} showFilter={showFilter} isLoading={isLoading} offset={offset} currentPage={currentPage} setCurrentPage={setCurrentPage} />
           </div>
         </div>
       </div>

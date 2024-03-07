@@ -13,6 +13,7 @@
     height: 15rem;
     line-height: 1.7rem;
     flex-direction: column;
+    transition: all .5s ease;
 }
 
 .product_block {
@@ -30,8 +31,12 @@
 }
 
 .product_name {
-    font-weight: 700;
+    font-weight: 900;
     font-style: italic;
+}
+
+.product_specs {
+    color: black;
 }
 
 

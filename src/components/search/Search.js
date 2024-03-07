@@ -1,30 +1,77 @@
 import React from "react";
 import './search.css'
 
-const Search = ({ handleInputChange, handleFilterButtonClick, handleClearSearch, activeField, showFilter, setCurrentPage }) => {
+const Search = ({ handleFilterButtonClick, handleClearSearch, setActiveField, showFilter,  setFilterValue, setCurrentPage}) => {
+    
     const handleFilterSearch = (e) => {
         e.preventDefault(); 
+        setCurrentPage(1);
         handleFilterButtonClick(e); 
-    }
+    };
+
+    const handleInputChange = (e) => {
+        const { value } = e.target;
+        let processedValue;
+    
+        if (/^\d+$/.test(value)) {
+            processedValue = parseInt(value); // конвертация в число
+        } else {
+            processedValue = value; 
+        }
+    
+        let params = '';
+        if (/^[А-Яа-яЁё]+$/.test(value)) {
+            params = 'product';
+        } else if (/^\d+$/.test(value)) {
+            params = 'price';
+        } else if (/^[A-Za-z]+$/.test(value)) {
+            params = 'brand';
+        }
+    
+        setFilterValue({ params, value: processedValue });
+        setActiveField(params);
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); 
+            setCurrentPage(1);
+            handleFilterButtonClick(e);
+        }
+    };   
 
     return(
-        <div>
+        <div className="search_line">
             <div className="search_block">
-                <h2 onClick={handleFilterSearch} className="search_button">Поиск</h2>
-                <form className="search_form flex">
-                    <div>
-                        <input 
-                          type="text" 
-                          name="universal" 
-                          placeholder="Поиск (товар, цена, бренд)" 
-                          required
-                          onChange={handleInputChange}
-                        />
-                    </div>
-                    {showFilter && (
-                        <button onClick={handleClearSearch}>Очистить результат</button>
-                    )}
-                </form>
+                <div className="search_input">
+                    <h2 onClick={handleFilterSearch} className="search_button" >Поиск</h2>
+                    <form >
+                        <div>
+                            <input className="search_form"
+                            type="text" 
+                            name="universal" 
+                            placeholder="Поиск (товар, цена, бренд)" 
+                            required
+                            onChange={handleInputChange}
+                            onKeyDown={handleKeyPress}
+                            ></input>
+                        </div>
+                        {showFilter && (
+                            <button className="clear_btn" onClick={handleClearSearch}>x</button>
+                        )}
+                    </form>
+                </div>
+                
+            </div>
+            <div className="flex search_words">
+                <h3><span>Кольца</span></h3>
+                <h3>Серьги</h3>
+                <h3>Цепи</h3>
+                <h3>Колье</h3>
+                <h3>Кулоны</h3>
+                <h3>Браслет</h3>
+                <h3>Подвески</h3>
+                <h3>Комплект украшений</h3>
             </div>
         </div>
     )

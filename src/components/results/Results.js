@@ -5,10 +5,9 @@ import Pagination from '../pagination/Pagination'
 import './loading.css'
 import './results.css'
 
-const Results = ({ showFilter, transformFilter, productItems, isLoading }) => {
+const Results = ({ showFilter, transformFilter, productItems, isLoading, currentPage, setCurrentPage }) => {
     const itemsPerPage = 50;
     
-    const [ currentPage, setCurrentPage ] = useState(1);
     const [ displayedItems, setDisplayedItems ] = useState([]);
 
     useEffect(() => {
@@ -34,7 +33,7 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading }) => {
         }
     };
 
-    // const totalPages2 = Math.ceil((showFilter ? transformFilter.length : productItems.length) / itemsPerPage)
+    const totalPages2 = Math.ceil((showFilter ? transformFilter.length : productItems.length) / itemsPerPage)
     // console.log('total pages', totalPages2)
 
     // console.log('current page',currentPage);
@@ -62,7 +61,7 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading }) => {
                         </div>
                     ))}
                     </div>
-                    {setCurrentPage >= 2? (
+                    {totalPages2 >= 2? (
                         <div className="low_pagination">
                             <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} currentPage={currentPage} setCurrentPage={setCurrentPage} itemsPerPage={itemsPerPage} />
                         </div>) : ( null)

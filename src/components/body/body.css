@@ -3,11 +3,6 @@
     align-items: center;
 }
 
-.home_button {
-    /* margin: 0px 0rem 18px -42px;
-    position: absolute; */
-}
-
 .background_banner {
     width: 100%;
     overflow: hidden;
@@ -16,7 +11,7 @@
 }
 
 .background_banner img {
-    object-position: 0px -741px;
+    object-position: 0px -720px;
     
 }
 
