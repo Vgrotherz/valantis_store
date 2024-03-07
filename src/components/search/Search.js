@@ -1,8 +1,9 @@
 import React from "react";
+
 import './search.css'
 
 const Search = ({ handleFilterButtonClick, handleClearSearch, setActiveField, showFilter,  setFilterValue, setCurrentPage}) => {
-    
+
     const handleFilterSearch = (e) => {
         e.preventDefault(); 
         setCurrentPage(1);
@@ -44,7 +45,8 @@ const Search = ({ handleFilterButtonClick, handleClearSearch, setActiveField, sh
         <div className="search_line">
             <div className="search_block">
                 <div className="search_input">
-                    <h2 onClick={handleFilterSearch} className="search_button" >Поиск</h2>
+                    <h2 onClick={handleFilterSearch} className="search_button button-6" >Поиск</h2>
+                    {/* <SearchBtn /> */}
                     <form >
                         <div>
                             <input className="search_form"
@@ -63,15 +65,15 @@ const Search = ({ handleFilterButtonClick, handleClearSearch, setActiveField, sh
                 </div>
                 
             </div>
-            <div className="flex search_words">
+            <div className="search_words">
                 <h3><span>Кольца</span></h3>
                 <h3>Серьги</h3>
                 <h3>Цепи</h3>
                 <h3>Колье</h3>
                 <h3>Кулоны</h3>
-                <h3>Браслет</h3>
+                <h3>Браслеты</h3>
                 <h3>Подвески</h3>
-                <h3>Комплект украшений</h3>
+                <h3>Комплекты украшений</h3>
             </div>
         </div>
     )

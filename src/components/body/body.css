@@ -4,14 +4,17 @@
 }
 
 .background_banner {
+    display: flex;
     width: 100%;
     overflow: hidden;
     height: 19rem;
     border: 1px solid #979797b3;
+    align-items: flex-end;
+    justify-content: center;
 }
 
 .background_banner img {
-    object-position: 0px -720px;
+    object-position: 0px 205px;
     
 }
 

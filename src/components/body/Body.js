@@ -61,7 +61,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
   const handleFilterButtonClick = async (e) => {
     setIsLoading(true)
     setOffset(0);
-    // e.preventDefault();
+    e.preventDefault();
 
     if (!filterValue.params || !filterValue.value) {
       console.log("Please enter a value for filtering.");
@@ -124,6 +124,9 @@ const Body = ({ currentPage, setCurrentPage }) => {
         />
         <div className="main flex">
           <div className="background_banner">
+            {showFilter && (
+              <button className="button-80" onClick={handleClearSearch}>Сбросить результат</button>
+            )}
             <img src={backgroundBanner} alt="background banner"></img>
           </div>
           <span className="main_span flex ">
