@@ -55,8 +55,8 @@ const Body = ({ currentPage, setCurrentPage }) => {
     fetchData();
   }, [offset]);
 
-  console.log('filter value log', filterValue.value );
-  console.log('filter params value', filterValue.params);
+  // console.log('filter value log', filterValue.value );
+  // console.log('filter params value', filterValue.params);
 
   const handleFilterButtonClick = async (e) => {
     setIsLoading(true)
@@ -73,7 +73,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
       if (filterValue.params && filterValue.value) {
         const filterObj = { [filterValue.params]: filterValue.params === "product" ? filterValue.value.toLowerCase() : filterValue.value }; 
         const filteredIds = await getDataFromApi('filter', filterObj); // фильтр по заданным параметрам "brand" "price" "product" 
-        console.log('filtered Ids', filteredIds)
+        // console.log('filtered Ids', filteredIds)
         const filteredItems = await getDataFromApi('get_items', { ids: filteredIds }); // расшифровка id полученного после фильтрации в filteredIds
 
         const uniqueFilteredItemsMap = new Map();
@@ -88,7 +88,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
         setTransformFilter(uniqueFilteredItems);
         setShowFilter(true); // true не даёт переключать "результат" на "каталог" при повторном нажатии на кнопку фильтра
         setIsLoading(false)
-        console.log('filtered items', uniqueFilteredItems);
+        // console.log('filtered items', uniqueFilteredItems);
       } else {
         
         console.log("Please provide a filter value.");
