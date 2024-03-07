@@ -71,7 +71,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
 
     try {
       if (filterValue.params && filterValue.value) {
-        const filterObj = { [filterValue.params]: filterValue.value }; 
+        const filterObj = { [filterValue.params]: filterValue.params === "product" ? filterValue.value.toLowerCase() : filterValue.value }; 
         const filteredIds = await getDataFromApi('filter', filterObj); // фильтр по заданным параметрам "brand" "price" "product" 
         console.log('filtered Ids', filteredIds)
         const filteredItems = await getDataFromApi('get_items', { ids: filteredIds }); // расшифровка id полученного после фильтрации в filteredIds
