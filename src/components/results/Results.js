@@ -9,6 +9,7 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading, current
     const itemsPerPage = 50;
     
     const [ displayedItems, setDisplayedItems ] = useState([]);
+    const [firstPage, setFirstPage] = useState(1);
 
     useEffect(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
@@ -47,7 +48,7 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading, current
                 
             ) : (
                 <div className="search_n_result">  
-                    <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} setCurrentPage={setCurrentPage} currentPage={currentPage} itemsPerPage={itemsPerPage} />
+                    <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} setCurrentPage={setCurrentPage} currentPage={currentPage} itemsPerPage={itemsPerPage} firstPage={firstPage} setFirstPage={setFirstPage}/>
                     <div className="result">
                     {displayedItems.map((item, id) => (
                         <div key={id} className="product_block">

@@ -114,6 +114,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
       <div>
         <Search
           handleFilterButtonClick={handleFilterButtonClick} 
+          activeField={activeField}
           setActiveField={setActiveField}
           handleClearSearch={handleClearSearch}
           showFilter={showFilter}

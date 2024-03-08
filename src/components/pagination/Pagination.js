@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React from "react";
 
 import './pagination.css';
 
-const Pagination = ({ handlePrevPage, handleNextPage, currentPage, showFilter, transformFilter, productItems, itemsPerPage, isLoading, setCurrentPage }) => {
+const Pagination = ({ handlePrevPage, handleNextPage, currentPage, showFilter, transformFilter, productItems, itemsPerPage, isLoading, setCurrentPage, setFirstPage }) => {
 
     const totalPages = Math.ceil((showFilter ? transformFilter.length : productItems.length) / itemsPerPage);
-    const [firstPage, setFirstPage] = useState(1);
+    // const [firstPage, setFirstPage] = useState(1);
 
     const renderPageNumbers = () => {
         const pageNumbers = [];
