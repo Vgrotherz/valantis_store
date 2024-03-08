@@ -38,7 +38,7 @@
 }
 
 @media only screen and (max-width:519px) {
-    .main_span h3 {
+    .main_span h3, .main_span h1 {
         margin-left: 16px;
     }
 }

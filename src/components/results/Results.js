@@ -64,7 +64,7 @@ const Results = ({ showFilter, transformFilter, productItems, isLoading, current
                     </div>
                     {totalPages2 >= 2? (
                         <div className="low_pagination">
-                            <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} currentPage={currentPage} setCurrentPage={setCurrentPage} itemsPerPage={itemsPerPage} />
+                            <Pagination handleNextPage={handleNextPage} handlePrevPage={handlePrevPage} transformFilter={transformFilter} productItems={productItems} showFilter={showFilter} currentPage={currentPage} setCurrentPage={setCurrentPage} itemsPerPage={itemsPerPage} firstPage={firstPage} setFirstPage={setFirstPage} />
                         </div>) : ( null)
                     }
                 </div>
