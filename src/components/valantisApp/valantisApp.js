@@ -1,5 +1,5 @@
 import md5 from 'md5';
-const apiUrl = `http://api.valantis.store:40000/`; // добавлен прокси для gh pages для устранения конфликта https и http
+const apiUrl = 'http://api.valantis.store:40000/';
 const apiPassword = 'Valantis';
 const retryTime = 1000; // время после которого будет повтор получения данных
 
@@ -14,8 +14,7 @@ export const getDataFromApi = async (action, params, retryCount = 0) => {
             }),
             headers: {
                 "Content-type" : "application/json",
-                "X-Auth" : md5(`${apiPassword}_${timestamp}`),
-                "Content-Security-Policy": "upgrade-insecure-requests"
+                "X-Auth" : md5(`${apiPassword}_${timestamp}`)
             }
         });
 
