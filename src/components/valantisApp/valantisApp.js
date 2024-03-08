@@ -1,6 +1,6 @@
 import md5 from 'md5';
-
-const apiUrl = `http://api.valantis.store:40000/`; // добавлен прокси для gh pages для устранения конфликта https и http
+const proxy = 'https://api.allorigins.win/get?url=';
+const apiUrl = `${proxy}http://api.valantis.store:40000/`; // добавлен прокси для gh pages для устранения конфликта https и http
 const apiPassword = 'Valantis';
 const retryTime = 1000; // время после которого будет повтор получения данных
 
