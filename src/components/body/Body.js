@@ -41,7 +41,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
 
             setProductItems(uniqueItems);
             setIsLoading(false)
-            // console.log('items log',uniqueItems) // uniqueItems меняется на items и тогда виден лог без изменений со всеми дублями
+            console.log('items log',uniqueItems) // uniqueItems меняется на items и тогда виден лог без изменений со всеми дублями
             // console.log('лог ids',uniqueIds) // тут на ids
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -88,7 +88,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
         setTransformFilter(uniqueFilteredItems);
         setShowFilter(true); // true не даёт переключать "результат" на "каталог" при повторном нажатии на кнопку фильтра
         setIsLoading(false)
-        // console.log('filtered items', uniqueFilteredItems);
+        console.log('filtered items', uniqueFilteredItems);
       } else {
         
         console.log("Please provide a filter value.");
