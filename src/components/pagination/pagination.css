@@ -1,16 +1,10 @@
 .pagination {
-    /* margin-top: 2rem;
-    margin-left: 5rem;
-    position: fixed;
-    width: 92.2%; */
     justify-content: center;
     align-items: center;
-    /* margin-top: 1rem; */
 }
 
 .pagination_button {
     border-radius: 2rem;
-    /* padding: 1rem; */
     width: 2rem;
     height: 2rem;
     font-size: 1.4rem;

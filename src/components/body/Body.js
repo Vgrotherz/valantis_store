@@ -7,8 +7,6 @@ import backgroundBanner from '../../media/banner.jpg'
 
 import './body.css'
 
-
-
 const Body = ({ currentPage, setCurrentPage }) => {
   const [ productItems, setProductItems ] = useState([]); // основной товар
   const [ transformFilter, setTransformFilter ] = useState([]); // отфильтрованый товар
@@ -17,8 +15,6 @@ const Body = ({ currentPage, setCurrentPage }) => {
   const [ showFilter, setShowFilter ] = useState(false); // 
   const [ offset, setOffset ] = useState(0); // стейт смещения 
   const [ isLoading, setIsLoading ] = useState(false) // стейт лоадера во время загрузки товара
-  
-  
 
   useEffect(() => {
     const fetchData = async () => {
