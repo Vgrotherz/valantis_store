@@ -2,6 +2,7 @@ import React, { useEffect, useState} from "react";
 import { getDataFromApi } from "../valantisApp/valantisApp";
 import Search from "../search/Search";
 import Results from "../results/Results";
+import Cors from "../Cors/Cors";
 
 import backgroundBanner from '../../media/banner.jpg'
 
@@ -15,6 +16,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
   const [ showFilter, setShowFilter ] = useState(false); // 
   const [ offset, setOffset ] = useState(0); // стейт смещения 
   const [ isLoading, setIsLoading ] = useState(false) // стейт лоадера во время загрузки товара
+  const [ initialLoadComplete, setInitialLoadComplete ] = useState(false); //  отслеживает первичную загрузку
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +39,8 @@ const Body = ({ currentPage, setCurrentPage }) => {
 
             setProductItems(uniqueItems);
             setIsLoading(false)
-            console.log('items log',uniqueItems) // uniqueItems меняется на items и тогда виден лог без изменений со всеми дублями
+            setInitialLoadComplete(true); // устанавливает значение после того как fetch загрузил 
+            // console.log('items log',uniqueItems) // uniqueItems меняется на items и тогда виден лог без изменений со всеми дублями
             // console.log('лог ids',uniqueIds) // тут на ids
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -84,10 +87,10 @@ const Body = ({ currentPage, setCurrentPage }) => {
         setTransformFilter(uniqueFilteredItems);
         setShowFilter(true); // true не даёт переключать "результат" на "каталог" при повторном нажатии на кнопку фильтра
         setIsLoading(false)
-        console.log('filtered items', uniqueFilteredItems);
+        // console.log('filtered items', uniqueFilteredItems);
       } else {
         
-        console.log("Please provide a filter value.");
+        // console.log("filter value is epmty.");
       }
     } catch (error) {
       console.error("Error filtering data:", error);
@@ -121,6 +124,7 @@ const Body = ({ currentPage, setCurrentPage }) => {
         />
         <div className="main flex">
           <div className="background_banner">
+            {isLoading && !initialLoadComplete && (<Cors />)}
             {showFilter && (
               <button className="button-80" onClick={handleClearSearch}>Сбросить результат</button>
             )}

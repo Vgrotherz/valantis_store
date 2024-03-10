@@ -7,13 +7,13 @@ const Cors = () => {
     }; 
    
     return ( 
-        <div> 
+        
             <button className="corsBtn" onClick={handleCorsClick}> 
-                Нажми на меня
+                Нажми на меня,
                 <br></br>
-                Да! это необходимо! 
+                если загрузка бесконечна 
             </button> 
-      </div> 
+    
     ); 
   }; 
  
