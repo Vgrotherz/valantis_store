@@ -1,5 +1,6 @@
 import md5 from 'md5';
-const apiUrl = 'http://api.valantis.store:40000/';
+const proxy = 'https://cors-anywhere.herokuapp.com/'
+const apiUrl = `${proxy}http://api.valantis.store:40000/`;
 const apiPassword = 'Valantis';
 const retryTime = 1000; // время после которого будет повтор получения данных
 
